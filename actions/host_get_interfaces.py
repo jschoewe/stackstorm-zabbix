@@ -17,19 +17,19 @@ from lib.actions import ZabbixBaseAction
 from pyzabbix.api import ZabbixAPIException
 
 
-class HostGetInventory(ZabbixBaseAction):
+class HostGetInterfaces(ZabbixBaseAction):
 
     def run(self, host_ids=None):
-        """ Gets the inventory of one or more Zabbix Hosts.
+        """ Gets the interfaces of one or more Zabbix Hosts.
         """
         self.connect()
 
-        # Find inventory by host ids
+        # Find interfaces by host ids
         try:
-            inventory = self.client.host.get(
-                hostids=host_ids, selectInventory='extend', output=['hostid', 'inventory'])
+            interfaces = self.client.host.get(
+                hostids=host_ids, selectInterfaces='extend', output=['hostid', 'interfaces'])
         except ZabbixAPIException as e:
             raise ZabbixAPIException(("There was a problem searching for the host: "
                                       "{0}".format(e)))
 
-        return inventory
+        return interfaces

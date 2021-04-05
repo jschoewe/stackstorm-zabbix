@@ -1,14 +1,14 @@
 import mock
 
 from zabbix_base_action_test_case import ZabbixBaseActionTestCase
-from host_get_inventory import HostGetInventory
+from host_get_interfaces import HostGetInterfaces
 
 from six.moves.urllib.error import URLError
 
 
-class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
+class HostGetInterfacesTestCase(ZabbixBaseActionTestCase):
     __test__ = True
-    action_cls = HostGetInventory
+    action_cls = HostGetInterfaces
 
     @mock.patch('lib.actions.ZabbixBaseAction.connect')
     def test_run_connection_error(self, mock_connect):
@@ -25,18 +25,18 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
         test_dict = {'host_ids': ["12345"]}
-        inventory_list = [{'hostid': "12345", 'inventory': {
-            'serialno_a': "abcd1234", 'name': "test"}}]
+        interfaces_list = [{'hostid': "12345", 'interfaces': {
+            'name': "test"}}]
         action.connect = mock_connect
-        mock_client.host.get.return_value = inventory_list
+        mock_client.host.get.return_value = interfaces_list
         action.client = mock_client
 
         result = action.run(**test_dict)
         mock_client.host.get.assert_called_with(
             hostids=test_dict['host_ids'],
-            selectInventory='extend',
-            output=['hostid', 'inventory'])
-        self.assertEqual(result, inventory_list)
+            selectInterfaces='extend',
+            output=['hostid', 'interfaces'])
+        self.assertEqual(result, interfaces_list)
 
     @mock.patch('lib.actions.ZabbixAPI')
     @mock.patch('lib.actions.ZabbixBaseAction.connect')
@@ -44,9 +44,9 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
         test_dict = {'host_ids': ["12345"]}
-        inventory_list = []
+        interfaces_list = []
         action.connect = mock_connect
-        mock_client.host.get.return_value = inventory_list
+        mock_client.host.get.return_value = interfaces_list
         action.client = mock_client
 
         result = action.run(**test_dict)
@@ -58,19 +58,19 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
         test_dict = {'host_ids': ["12345"]}
-        inventory_list = [{'hostid': "12345", 'inventory': {
-            'serialno_a': "abcd1234", 'name': "test"}}]
+        interfaces_list = [{'hostid': "12345", 'interfaces': {
+            'name': "test"}}]
         action.connect = mock_connect
-        mock_client.host.get.return_value = inventory_list
+        mock_client.host.get.return_value = interfaces_list
         action.client = mock_client
-        expected_return = [{'hostid': inventory_list[0][
-            'hostid'], 'inventory': inventory_list[0]['inventory']}]
+        expected_return = [{'hostid': interfaces_list[0][
+            'hostid'], 'interfaces': interfaces_list[0]['interfaces']}]
 
         result = action.run(**test_dict)
         mock_client.host.get.assert_called_with(
             hostids=test_dict['host_ids'],
-            selectInventory='extend',
-            output=['hostid', 'inventory'])
+            selectInterfaces='extend',
+            output=['hostid', 'interfaces'])
         self.assertEqual(result, expected_return)
 
     @mock.patch('lib.actions.ZabbixAPI')
@@ -79,21 +79,21 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
         test_dict = {'host_ids': ["12345", "98765"]}
-        inventory_list = [{'hostid': "12345", 'inventory':
-                           {'serialno_a': "abcd1234", 'name': "test"}},
-                          {'hostid': "98765", 'inventory':
-                           {'serialno_a': "efgh5678", 'name': "test2"}}]
+        interfaces_list = [{'hostid': "12345", 'interfaces':
+                           {'name': "test"}},
+                          {'hostid': "98765", 'interfaces':
+                           {'name': "test2"}}]
         action.connect = mock_connect
-        mock_client.host.get.return_value = inventory_list
+        mock_client.host.get.return_value = interfaces_list
         action.client = mock_client
-        expected_return = [{'hostid': inventory_list[0]['hostid'],
-                            'inventory': inventory_list[0]['inventory']},
-                           {'hostid': inventory_list[1]['hostid'],
-                            'inventory': inventory_list[1]['inventory']}]
+        expected_return = [{'hostid': interfaces_list[0]['hostid'],
+                            'interfaces': interfaces_list[0]['interfaces']},
+                           {'hostid': interfaces_list[1]['hostid'],
+                            'interfaces': interfaces_list[1]['interfaces']}]
 
         result = action.run(**test_dict)
         mock_client.host.get.assert_called_with(
             hostids=test_dict['host_ids'],
-            selectInventory='extend',
-            output=['hostid', 'inventory'])
+            selectInterfaces='extend',
+            output=['hostid', 'interfaces'])
         self.assertEqual(result, expected_return)
